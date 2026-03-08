@@ -1,4 +1,12 @@
+# Dependencies
 node_modules/
+
+# IDE / Editor
 .vscode/
+
+# Claude Code
+.claude/
+
+# Tests
 __tests__/
-demo/
+

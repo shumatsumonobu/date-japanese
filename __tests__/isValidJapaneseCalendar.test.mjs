@@ -1,7 +1,7 @@
 import {isValidJapaneseCalendar} from '../dist/build.mjs';
 
 describe('isValidJapaneseCalendar', () => {
-  describe('Valid Japanese Calendar Dates', () => {
+  describe('returns true for valid Japanese calendar dates', () => {
     test.each([
       '明治元年1月25日',
       '明治45年7月29日',
@@ -13,12 +13,10 @@ describe('isValidJapaneseCalendar', () => {
       '平成31年4月30日',
       '令和元年5月1日',
       '令和4年2月21日',
-    ])('should return true for valid Japanese date: %s', (date) => {
+    ])('year-month-day: "%s"', (date) => {
       expect(isValidJapaneseCalendar(date)).toBe(true);
     });
-  });
 
-  describe('Valid Japanese Calendar Year-Month Dates', () => {
     test.each([
       '明治元年1月',
       '明治45年7月',
@@ -30,12 +28,10 @@ describe('isValidJapaneseCalendar', () => {
       '平成31年4月',
       '令和元年5月',
       '令和4年2月',
-    ])('should return true for valid Japanese year-month date: %s', (date) => {
+    ])('year-month: "%s"', (date) => {
       expect(isValidJapaneseCalendar(date)).toBe(true);
     });
-  });
 
-  describe('Valid Japanese Calendar Year Dates', () => {
     test.each([
       '明治元年',
       '明治45年',
@@ -47,46 +43,42 @@ describe('isValidJapaneseCalendar', () => {
       '平成31年',
       '令和元年',
       '令和4年',
-    ])('should return true for valid Japanese year date: %s', (date) => {
+    ])('year-only: "%s"', (date) => {
       expect(isValidJapaneseCalendar(date)).toBe(true);
     });
   });
 
-  describe('Invalid Western Calendar Dates', () => {
+  describe('returns false for Western calendar dates', () => {
     test.each([
-      ['1868-01-25', 'YYYY-MM-DD'],
-      ['1912-07-29', 'YYYY-MM-DD'],
-      ['1912-07-30', 'YYYY-MM-DD'],
-      ['1926-12-24', 'YYYY-MM-DD'],
-      ['1926-12-25', 'YYYY-MM-DD'],
-      ['1989-01-07', 'YYYY-MM-DD'],
-      ['1989-01-08', 'YYYY-MM-DD'],
-      ['2019-04-30', 'YYYY-MM-DD'],
-      ['2019-05-01', 'YYYY-MM-DD'],
-      ['2022-02-21', 'YYYY-MM-DD'],
-    ])('should return false for invalid Western date: %s (%s format)', (date, format) => {
+      '1868-01-25',
+      '1912-07-29',
+      '1912-07-30',
+      '1926-12-24',
+      '1926-12-25',
+      '1989-01-07',
+      '1989-01-08',
+      '2019-04-30',
+      '2019-05-01',
+      '2022-02-21',
+    ])('YYYY-MM-DD: "%s"', (date) => {
       expect(isValidJapaneseCalendar(date)).toBe(false);
     });
-  });
 
-  describe('Invalid Western Calendar Year-Month Dates', () => {
     test.each([
-      ['1868-01', 'YYYY-MM'],
-      ['1912-07', 'YYYY-MM'],
-      ['1912-08', 'YYYY-MM'],
-      ['1926-12', 'YYYY-MM'],
-      ['1927-01', 'YYYY-MM'],
-      ['1989-01', 'YYYY-MM'],
-      ['1989-02', 'YYYY-MM'],
-      ['2019-04', 'YYYY-MM'],
-      ['2019-05', 'YYYY-MM'],
-      ['2022-02', 'YYYY-MM'],
-    ])('should return false for invalid Western year-month date: %s (%s format)', (date, format) => {
+      '1868-01',
+      '1912-07',
+      '1912-08',
+      '1926-12',
+      '1927-01',
+      '1989-01',
+      '1989-02',
+      '2019-04',
+      '2019-05',
+      '2022-02',
+    ])('YYYY-MM: "%s"', (date) => {
       expect(isValidJapaneseCalendar(date)).toBe(false);
     });
-  });
 
-  describe('Invalid Western Calendar Year Dates', () => {
     test.each([
       '1868',
       '1912',
@@ -98,7 +90,20 @@ describe('isValidJapaneseCalendar', () => {
       '2019',
       '2020',
       '2022',
-    ])('should return false for invalid Western year date: %s', (date) => {
+    ])('YYYY: "%s"', (date) => {
+      expect(isValidJapaneseCalendar(date)).toBe(false);
+    });
+  });
+
+  describe('returns false for malformed values', () => {
+    test.each([
+      ['', 'empty string'],
+      ['abc', 'random string'],
+      ['令和', 'era name only without year'],
+      ['令和年', 'era name with 年 but no number'],
+      ['2022年2月21日', 'Western year with Japanese suffixes'],
+      ['令和-4年', 'era name with invalid separator'],
+    ])('%s (%s)', (date) => {
       expect(isValidJapaneseCalendar(date)).toBe(false);
     });
   });

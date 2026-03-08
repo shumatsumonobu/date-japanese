@@ -1,182 +1,169 @@
 # date-japanese
 
-Convert Japanese calendar dates to Western calendar dates and vice versa. Full support for Kanji numerals in Wareki dates.
+Seamless conversion between Japanese era dates (和暦) and Western dates — with full kanji numeral and OCR support.
 
-## Installation
+```js
+toWesternCalendar('令和4年2月21日');        // '2022-02-21'
+toWesternCalendar('令和七年一月三十一日');    // '2025-01-31'  ← kanji numerals
+toJapaneseCalendar('2022-02-21');           // '令和4年2月21日'
+```
+
+Five eras. One API. Zero friction.
+
+## Features
+
+- **Bidirectional** — Western ↔ Japanese, both directions
+- **Kanji numerals** — `令和七年一月三十一日` just works
+- **OCR-friendly** — auto-corrects common misrecognized characters
+- **Flexible precision** — year-month-day, year-month, or year-only
+- **Universal** — ESM, CommonJS, and browser (UMD)
+- **TypeScript** — ships with type declarations out of the box
+
+## Install
 
 ```bash
-npm install --save date-japanese
+npm install date-japanese
 ```
 
 ## Quick Start
 
-### Node.js
-
 ```js
-const {toWesternCalendar, toJapaneseCalendar} = require('date-japanese');
+// ESM
+import {toWesternCalendar, toJapaneseCalendar, isValidJapaneseCalendar} from 'date-japanese';
 
-toWesternCalendar('令和4年2月21日', 'YYYY-MM-DD'); // -> 2022-02-21
-toWesternCalendar('令和七年一月三十一日', 'YYYY-MM-DD'); // -> 2025-01-31
-toWesternCalendar('令和4年2月', 'YYYY-MM'); // -> 2022-02
-toWesternCalendar('昭和64年', 'YYYY'); // -> 1989
-
-toJapaneseCalendar('2022-02-21'); // -> 令和4年2月21日
-toJapaneseCalendar('1989-01'); // -> 昭和64年1月
-toJapaneseCalendar('1990'); // -> 平成2年
+// CommonJS
+const {toWesternCalendar, toJapaneseCalendar, isValidJapaneseCalendar} = require('date-japanese');
 ```
 
-Or in ES6 syntax:
-
 ```js
-import {toWesternCalendar, toJapaneseCalendar} from 'date-japanese';
+// Japanese → Western
+toWesternCalendar('令和4年2月21日');                    // '2022-02-21'
+toWesternCalendar('平成31年4月30日', 'YYYY/MM/DD');     // '2019/04/30'
+toWesternCalendar('令和四年二月二十一日', 'YYYY-MM-DD'); // '2022-02-21'
 
-toWesternCalendar('令和4年2月21日', 'YYYY-MM-DD'); // -> 2022-02-21
-toWesternCalendar('令和七年一月三十一日', 'YYYY-MM-DD'); // -> 2025-01-31
-toWesternCalendar('令和4年2月', 'YYYY-MM'); // -> 2022-02
-toWesternCalendar('昭和64年', 'YYYY'); // -> 1989
+// Western → Japanese
+toJapaneseCalendar('2022-02-21');   // '令和4年2月21日'
+toJapaneseCalendar('1989-01');      // '昭和64年1月'
+toJapaneseCalendar('1868');         // '明治元年'
 
-toJapaneseCalendar('2022-02-21'); // -> 令和4年2月21日
-toJapaneseCalendar('1989-01'); // -> 昭和64年1月
-toJapaneseCalendar('1990'); // -> 平成2年
+// Validation
+isValidJapaneseCalendar('令和4年2月21日');   // true
+isValidJapaneseCalendar('2022-02-21');      // false
 ```
 
-### Browser
+**Browser (UMD)**
 
 ```html
 <script src="node_modules/date-japanese/dist/build.js"></script>
 <script>
-  dateJapanese.toWesternCalendar('令和4年2月21日', 'YYYY-MM-DD'); // -> 2022-02-21
-  dateJapanese.toJapaneseCalendar('2022-02-21'); // -> 令和4年2月21日
-</script>
-```
-
-Or in ES6 syntax:
-
-```html
-<script type="module">
-  import {toWesternCalendar, toJapaneseCalendar} from 'node_modules/date-japanese/dist/build.mjs';
-
-  toWesternCalendar('令和4年2月21日', 'YYYY-MM-DD'); // -> 2022-02-21
-  toJapaneseCalendar('2022-02-21'); // -> 令和4年2月21日
+  dateJapanese.toWesternCalendar('令和4年2月21日');   // '2022-02-21'
+  dateJapanese.toJapaneseCalendar('2022-02-21');      // '令和4年2月21日'
 </script>
 ```
 
 ## API
 
-### `toWesternCalendar(japaneseDate, format, throwOnInvalid)`
+### `toWesternCalendar(japaneseDate, format?, throwOnInvalid?)`
 
-Converts a Japanese calendar date to a Western calendar date in the specified format.   
-Supported eras: Meiji (明治), Taisho (大正), Showa (昭和), Heisei (平成), Reiwa (令和).   
-This function can also handle Japanese dates written with Kanji numerals.
+Converts a Japanese calendar date to a Western (Gregorian) calendar date.
+Kanji numerals and OCR-misrecognized characters are handled automatically.
 
-**Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `japaneseDate` | `string` | — | Japanese calendar date (e.g., `'令和4年2月20日'`, `'令和4年2月'`, `'令和4年'`) |
+| `format` | `string` | `'YYYY-MM-DD'` | Output date format (see format tokens below). Throws `TypeError` if invalid. |
+| `throwOnInvalid` | `boolean` | `false` | Throw `TypeError` on invalid input instead of returning `''` |
 
-* `japaneseDate`: Japanese calendar date (e.g., '令和4年2月20日', '令和4年2月', '令和4年').
-* `format`: Output date format. Available tokens: YYYY, YY, M, MM, MMM, MMMM, D, DD (default: 'YYYY-MM-DD').
-* `throwOnInvalid`: If `true`, throws an error if the input date is invalid. If `false`, returns an empty string (default: `false`).
+Returns the formatted Western date string, or `''` if the input is invalid and `throwOnInvalid` is `false`.
 
-**Return value:**
+**Format tokens**
 
-The Western calendar date in the specified format, or an empty string if the input is invalid and `throwOnInvalid` is `false`.
-
-**Examples:**
+| Token | Output | Example |
+|-------|--------|---------|
+| `YYYY` | 4-digit year | `2022` |
+| `YY` | 2-digit year | `22` |
+| `MMMM` | Full month name | `February` |
+| `MMM` | Abbreviated month | `Feb` |
+| `MM` | 2-digit month | `02` |
+| `M` | Month | `2` |
+| `DD` | 2-digit day | `05` |
+| `D` | Day | `5` |
 
 ```js
-toWesternCalendar('令和元年5月1日'); // -> 2019-05-01
-toWesternCalendar('令和4年2月21日', 'YYYY/MM/DD'); // -> 2022/02/21
-toWesternCalendar('平成元年1月', 'YYYY-MM'); // -> 1989-01
+toWesternCalendar('令和4年2月21日');                    // '2022-02-21'
+toWesternCalendar('平成31年4月30日', 'YYYY/MM/DD');     // '2019/04/30'
+toWesternCalendar('令和四年二月二十一日', 'YYYY-MM-DD'); // '2022-02-21'
+toWesternCalendar('令和4年2月', 'YYYY-MM');              // '2022-02'
+toWesternCalendar('明治元年', 'YYYY');                   // '1868'
+toWesternCalendar('invalid');                            // ''
+toWesternCalendar('invalid', 'YYYY-MM-DD', true);       // throws TypeError
 ```
 
-### `toJapaneseCalendar(westernDate)`
+### `toJapaneseCalendar(westernDate, throwOnInvalid?)`
 
-Converts a Western calendar date to a Japanese calendar date.
-This function only supports dates from 1868-01-25 onwards (Meiji era and later).
+Converts a Western (Gregorian) calendar date to a Japanese calendar date.
+Supports dates from **1868-01-25** onwards (Meiji era and later).
 
-**Parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `westernDate` | `string` | — | Western date in any format listed below |
+| `throwOnInvalid` | `boolean` | `false` | Throw `TypeError` on invalid input instead of returning `''` |
 
-* `westernDate`: Western calendar date in one of the following formats: 'YYYY-MM-DD', 'YYYY-M-D', 'YYYY/MM/DD', 'YYYY/M/D', 'MM-DD-YYYY', 'M-D-YYYY', 'MM/DD/YYYY', 'M/D/YYYY', 'YYYY-MM', 'YYYY-M', 'YYYY/MM', 'YYYY/M', 'MM-YYYY', 'M-YYYY', 'MM/YYYY', 'M/YYYY', 'YYYY'.
-* `throwOnInvalid`: If `true`, throws an error if the input date is invalid. If `false`, returns an empty string (default: `false`).
+Returns the Japanese calendar date string (e.g., `'令和4年2月21日'`), or `''` if the input is before the Meiji era or invalid.
 
-**Return value:**
-The Japanese calendar date, or an empty string if the input date is before the Meiji era or invalid (and `throwOnInvalid` is `false`).
+**Accepted input formats**
 
-**Examples:**
+| Precision | Formats |
+|-----------|---------|
+| Year-month-day | `YYYY-MM-DD` `YYYY-M-D` `YYYY/MM/DD` `YYYY/M/D` |
+| | `MM-DD-YYYY` `M-D-YYYY` `MM/DD/YYYY` `M/D/YYYY` |
+| Year-month | `YYYY-MM` `YYYY-M` `YYYY/MM` `YYYY/M` |
+| | `MM-YYYY` `M-YYYY` `MM/YYYY` `M/YYYY` |
+| Year-only | `YYYY` |
 
 ```js
-toJapaneseCalendar('2019-05-01'); // -> 令和元年5月1日
-toJapaneseCalendar('2022-02-21'); // -> 令和4年2月21日
-toJapaneseCalendar('1989-02'); // -> 平成元年2月
+toJapaneseCalendar('2022-02-21');    // '令和4年2月21日'
+toJapaneseCalendar('2019-05-01');    // '令和元年5月1日'
+toJapaneseCalendar('1989-01');       // '昭和64年1月'
+toJapaneseCalendar('1868');          // '明治元年'
+toJapaneseCalendar('1867-12-31');    // ''  (before Meiji)
+toJapaneseCalendar('invalid', true); // throws TypeError
 ```
 
 ### `isValidJapaneseCalendar(value)`
 
-Checks if the given value is a valid Japanese calendar date.
+Checks if a string is a valid Japanese calendar date.
 
-**Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `value` | `string` | The value to validate |
 
-* `value`: The value to be validated.
-
-**Return value:**
-
-`true` if the value is a valid Japanese calendar date, `false` otherwise.
-
-**Examples:**
+Returns `true` if valid, `false` otherwise.
 
 ```js
-isValidJapaneseCalendar('令和元年5月1日'); // -> true
-isValidJapaneseCalendar('令和4年2月21日'); // -> true
-isValidJapaneseCalendar('2022-02-21'); // -> false
+isValidJapaneseCalendar('令和4年2月21日');   // true
+isValidJapaneseCalendar('平成31年4月');      // true
+isValidJapaneseCalendar('昭和元年');         // true
+isValidJapaneseCalendar('2022-02-21');      // false
 ```
 
-## Demos
+## Supported Eras
 
-This package includes demos for various environments:
+| Era | Japanese | Period |
+|-----|----------|--------|
+| Meiji | 明治 | 1868-01-25 ~ 1912-07-29 |
+| Taisho | 大正 | 1912-07-30 ~ 1926-12-24 |
+| Showa | 昭和 | 1926-12-25 ~ 1989-01-07 |
+| Heisei | 平成 | 1989-01-08 ~ 2019-04-30 |
+| Reiwa | 令和 | 2019-05-01 ~ present |
 
-* **Browser Demo:** [demo/browser/index.html](demo/browser/index.html)
-    * See the screenshot below for a preview.
-* **Node.js (CommonJS):** [cjs/index.cjs](cjs/index.js)
-* **Node.js (ES Modules):** [esm/index.js](esm/index.js)
+## Changelog
 
-### Browser Demo Screenshot
-
-![Browser Demo Screenshot](screencaps/chrome-capture-2025-1-30.jpeg)
-
-## Prototypes
-
-### `prototypes/run_japanese_calendar.mjs`
-
-```bash
-node prototypes/run_japanese_calendar.mjs -d 2025-01-30 # -> Western Calendar: 2025-01-30, Japanese Calendar: 令和7年1月30日
-node prototypes/run_japanese_calendar.mjs -d 2025/1/30 # -> Western Calendar: 2025/1/30, Japanese Calendar: 令和7年1月30日
-node prototypes/run_japanese_calendar.mjs -d 2025-01 # -> Western Calendar: 2025-01, Japanese Calendar: 令和7年1月
-node prototypes/run_japanese_calendar.mjs -d 2025/1 # -> Western Calendar: 2025/1, Japanese Calendar: 令和7年1月
-node prototypes/run_japanese_calendar.mjs -d 2025 # -> Western Calendar: 2025, Japanese Calendar: 令和7年
-```
-
-### `prototypes/run_wester_calendar.mjs`
-
-```bash
-node prototypes/run_wester_calendar.mjs -d 令和七年一月二日 # -> Japanese Calendar: 令和七年一月二日, Western Calendar: 2025-01-02
-node prototypes/run_wester_calendar.mjs -d 大正元年7月30日 # -> Japanese Calendar: 大正元年7月30日, Western Calendar: 1912-07-30
-```
-
-## Testing
-
-```bash
-npm test
-```
-
-## Release Notes
-
-All changes can be found [here](CHANGELOG.md).
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Author
 
-**Takuya Motoshima**
-
-* [github/takuya-motoshima](https://github.com/takuya-motoshima)
-* [twitter/TakuyaMotoshima](https://twitter.com/TakuyaMotoshima)
-* [facebook/takuya.motoshima.7](https://www.facebook.com/takuya.motoshima.7)
+**shumatsumonobu** — [GitHub](https://github.com/shumatsumonobu) / [X](https://x.com/shumatsumonobu) / [Facebook](https://www.facebook.com/takuya.motoshima.7)
 
 ## License
 

@@ -1,7 +1,7 @@
 {
   "name": "date-japanese",
-  "version": "1.0.0",
-  "description": "Convert Japanese calendar dates to Western calendar dates and vice versa. Full support for Kanji numerals in Wareki dates.",
+  "version": "2.1.0",
+  "description": "Seamless conversion between Japanese era dates (和暦) and Western dates — with full kanji numeral and OCR support.",
   "type": "module",
   "main": "dist/build.cjs",
   "module": "dist/build.mjs",
@@ -18,10 +18,7 @@
     "types/",
     "CHANGELOG.md",
     "LICENSE",
-    "package.json",
-    "README.md",
-    "demo/",
-    "screencaps/"
+    "README.md"
   ],
   "scripts": {
     "watch": "rollup -c rollup.config.js --watch",
@@ -33,40 +30,39 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/takuya-motoshima/date-japanese.git"
+    "url": "git+https://github.com/shumatsumonobu/date-japanese.git"
   },
   "keywords": [
-    "browser",
-    "javascript",
-    "js",
-    "library",
-    "lib",
-    "module",
-    "typescript",
-    "ts",
-    "esm",
-    "es6",
-    "calendar",
+    "japanese-calendar",
+    "wareki",
+    "和暦",
     "gregorian",
-    "japanese"
+    "date-conversion",
+    "kanji-numerals",
+    "meiji",
+    "taisho",
+    "showa",
+    "heisei",
+    "reiwa",
+    "ocr",
+    "typescript"
   ],
-  "author": "Takuya Motoshima <developer.takuyamotoshima@gmail.com> (https://twitter.com/TakuyaMotoshima)",
+  "author": "shumatsumonobu <shumatsumonobu@gmail.com> (https://x.com/shumatsumonobu)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/takuya-motoshima/date-japanese/issues",
-    "email": "developer.takuyamotoshima@gmail.com"
+    "url": "https://github.com/shumatsumonobu/date-japanese/issues",
+    "email": "shumatsumonobu@gmail.com"
   },
-  "homepage": "https://github.com/takuya-motoshima/date-japanese#readme",
+  "homepage": "https://github.com/shumatsumonobu/date-japanese#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^26.0.3",
+    "@rollup/plugin-commonjs": "^29.0.2",
     "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.3.1",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@types/jest": "^29.5.14",
-    "commander": "^13.1.0",
-    "jest": "^29.7.0",
-    "rimraf": "^3.0.2",
-    "rollup": "^4.32.1",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "rimraf": "^6.1.3",
+    "rollup": "^4.59.0",
     "rollup-plugin-typescript2": "^0.36.0"
   },
   "dependencies": {
